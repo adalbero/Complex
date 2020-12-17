@@ -56,10 +56,12 @@ public class TestComplex {
 		assertEquals(new Complex(-1, 0), new Complex(0, 1).mult(Complex.I));
 		assertEquals(new Complex(0, -1), new Complex(-1, 0).mult(Complex.I));
 		assertEquals(new Complex(1), new Complex(0, -1).mult(Complex.I));
+		
+		assertEquals(new Complex(2, 2), new Complex(1, 1).mult(2));
 	}
 
 	@Test
-	public void testDim() {
+	public void testDiv() {
 		assertEquals(new Complex(3, 2), new Complex(4, 7).div(new Complex(2, 1)));
 		assertEquals(new Complex(0, 1), new Complex(0, 1).div(new Complex(1)));
 	}
@@ -70,6 +72,26 @@ public class TestComplex {
 	}
 
 	@Test
+	public void testPolar() {
+		Complex z1, z2, z3;
+		
+		assertEquals(Complex.I, Complex.polar(1, Math.PI/2));
+		
+		z1 = new Complex(2, 1);
+		z2 = new Complex(3, 2);
+		z3 = z1.mult(z2);
+		
+		assertEquals(z3.mod(), z1.mod() * z2.mod(), Complex.PRECISION);
+		assertEquals(z3.arg(), z1.arg() + z2.arg(), Complex.PRECISION);
+
+		z1 = new Complex(4, 7);
+		z2 = new Complex(2, 1);
+		z3 = z1.div(z2);
+		
+		assertEquals(z3.mod(), z1.mod() / z2.mod(), Complex.PRECISION);
+		assertEquals(z3.arg(), z1.arg() - z2.arg(), Complex.PRECISION);
+	}
+	@Test
 	public void testArg() {
 		assertEquals(0, new Complex(1, 0).arg(), Complex.PRECISION);
 		assertEquals(Math.PI / 4, new Complex(1, 1).arg(), Complex.PRECISION);
@@ -78,7 +100,37 @@ public class TestComplex {
 		assertEquals(-Math.PI / 2, new Complex(0, -1).arg(), Complex.PRECISION);
 		assertEquals(Double.NaN, new Complex(0, 0).arg(), Complex.PRECISION);
 	}
+	
+	@Test
+	public void testPow() {
+		assertEquals(new Complex(-1), Complex.I.pow(2));
+		
+		assertTrue(Complex.I.pow(2).equals(-1));
+	}
+	
+	@Test
+	public void testSqrt() {
+		assertEquals(Complex.I, new Complex(-1).sqrt());
+		assertEquals(Complex.I.sqrt(), Complex.I.pow(0.5));
+	}
 
+	@Test
+	public void testExp() {
+		assertEquals(new Complex(-1, 0), Complex.I.mult(Complex.PI).exp());
+		
+		Complex z1 = new Complex(2, 1);
+		Complex z2 = new Complex(3, 1);
+		
+		assertEquals(z1.add(z2).exp(), z1.exp().mult(z2.exp()));
+	}
+	
+	@Test
+	public void testLog() {
+		Complex z = new Complex(2, 1);
+		
+		assertEquals(z, z.log().exp());
+	}
+	
 	@Test
 	public void testRoots() {
 		Complex[] roots;

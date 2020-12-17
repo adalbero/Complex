@@ -6,6 +6,7 @@ public class Complex {
 	public static final Complex ZERO = new Complex(0, 0);
 	public static final Complex ONE = new Complex(1);
 	public static final Complex I = new Complex(0, 1);
+	public static final Complex PI = new Complex(Math.PI);
 
 	private double re;
 	private double im;
@@ -21,6 +22,10 @@ public class Complex {
 
 	public Complex(Complex z) {
 		this(z.re, z.im);
+	}
+
+	public static Complex polar(double r, double t) {
+		return Complex.I.mult(t).exp().mult(r);
 	}
 
 	public double getRe() {
@@ -87,6 +92,10 @@ public class Complex {
 		return new Complex(u, v);
 	}
 
+	public Complex mult(double x) {
+		return this.mult(new Complex(x));
+	}
+
 	public Complex div(Complex z) {
 		double a = this.re;
 		double b = this.im;
@@ -97,6 +106,10 @@ public class Complex {
 		double v = (b * c - a * d) / (c * c + d * d);
 
 		return new Complex(u, v);
+	}
+
+	public Complex div(double x) {
+		return this.div(new Complex(x));
 	}
 
 	public double mod() {
@@ -117,15 +130,47 @@ public class Complex {
 		double a = this.re;
 		double b = this.im;
 
-		double r = this.mod();
-
 		if (a == 0 && b == 0) {
 			return Double.NaN;
-		} else if (a < 0 && b == 0) {
-			return Math.PI;
 		} else {
 			return Math.atan2(b, a);
 		}
+	}
+
+	public Complex pow(double n) {
+		double r = this.mod();
+		double p = this.arg();
+
+		double u = Math.pow(r, n) * Math.cos(n * p);
+		double v = Math.pow(r, n) * Math.sin(n * p);
+
+		return new Complex(u, v);
+	}
+
+	public Complex sqrt() {
+		double r = this.mod();
+
+		double u = Math.sqrt((this.re + r) / 2);
+		double v = (this.im < 0 ? -1 : 1) * Math.sqrt((-this.re + r) / 2);
+
+		return new Complex(u, v);
+	}
+
+	public Complex exp() {
+		double u = Math.exp(this.re) * Math.cos(this.im);
+		double v = Math.exp(this.re) * Math.sin(this.im);
+
+		return new Complex(u, v);
+	}
+
+	public Complex log() {
+		double r = this.mod();
+		double p = this.arg();
+
+		double u = Math.log(r);
+		double v = p;
+
+		return new Complex(u, v);
 	}
 
 	@Override
@@ -147,6 +192,10 @@ public class Complex {
 			double d = z.im;
 
 			return eq(a, c) && eq(b, d);
+		} else if (obj instanceof Number) {
+			Number x = (Number) obj;
+			return this.equals(new Complex(x.doubleValue()));
+
 		} else {
 			return false;
 		}
